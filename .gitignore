@@ -1,6 +1,9 @@
-node_modules/
-
 # General
+node_modules
+/dist
+/build
+
+# MacOS directories
 .DS_Store
 .AppleDouble
 .LSOverride
