@@ -51,6 +51,13 @@ export default {
 
   data: () => ({
     //
-  })
+  }),
+
+  created () {
+    console.log(this.$store);
+    if (!this.$store.getters.isAuthenticated) {
+      this.$store.dispatch("authenticate");
+    }
+  }
 };
 </script>
