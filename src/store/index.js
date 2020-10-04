@@ -14,7 +14,8 @@ export default new Vuex.Store({
     apiKey: "23567b218376f79d9415",
     token: localStorage.getItem("token") || "",
     status: "",
-    images: []
+    images: [],
+    details: {}
   },
   getters: {
     isAuthenticated: (state) => {
@@ -36,6 +37,9 @@ export default new Vuex.Store({
     },
     setAuthStatus: (state, status) => {
       state.status = status;
+    },
+    setImageDetails: (state, data) => {
+      state.details = data;
     }
   },
   actions: {
@@ -43,7 +47,7 @@ export default new Vuex.Store({
       if (state.status === STATUSES.PENDING) { return; }
       commit("setAuthStatus", STATUSES.PENDING);
 
-      return $http.get("/auth", { apiKey: state.apiKey }).then(response => {
+      return $http.post("/auth", { apiKey: state.apiKey }).then(response => {
         commit("renewToken", response.data.token);
         commit("setAuthStatus", STATUSES.SUCCESS);
       }).catch(err => {
@@ -56,8 +60,16 @@ export default new Vuex.Store({
       return $http.get("/images", { query: { page } }).then(response => {
         commit("setImages", response.data);
       }).error(err => {
-        console.error(err);
+        console.info(err);
         commit("setImages", []);
+      });
+    },
+    getImageDetails: ({ commit }, id) => {
+      return $http.get(`/images/${id}`).then(response => {
+        commit("setImageDetails", response.data);
+      }).catch(err => {
+        console.error(err);
+        commit("setImageDetails", {});
       });
     }
   },
